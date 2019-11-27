@@ -40,6 +40,7 @@ std::ostream& operator<<(std::ostream& ost, const Rabbit_breed& breed);
 class Rabbit : public Animal {
   public:
     Rabbit(Rabbit_breed breed, std::string name, Gender gender, int age);
+    Rabbit(std::istream& ist);
     virtual ~Rabbit();
     virtual std::string family() const override;
     virtual std::string breed() const override;

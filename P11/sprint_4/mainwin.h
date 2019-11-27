@@ -21,6 +21,7 @@ class Mainwin : public Gtk::Window {
         void on_adopt_animal_click();      // A client adopts an animal
         void on_list_adopted_click();      // List all adoptions by a client
         void on_save_click();              // save a file
+        void on_open_click();              //open a file
         void status(std::string s);        // Set the status message
     private:
         Shelter *shelter;                  // Current animal shelter

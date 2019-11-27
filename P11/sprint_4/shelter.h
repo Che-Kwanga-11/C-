@@ -18,6 +18,7 @@ class Shelter {
     int num_clients();
     Client& client(int index);
     void save(std::ostream& ost);
+    void open(std::istream& ist);
     void adopt(Client& client, Animal& animal);
   private:
     std::string _name;

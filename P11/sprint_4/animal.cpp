@@ -3,7 +3,14 @@
 // Constructors / Destructors
 Animal::Animal(std::string name, Gender gender, int age)
     : _name{name}, _gender{gender}, _age{age} { }
-
+Animal::Animal(std::istream& ist){
+    ist>>_name;
+    std::string gender;
+    ist>>gender;
+    if(gender=="male"){_gender=Gender::MALE;}
+    else{_gender=Gender::FEMALE;}
+    ist>>_age;
+}
 Animal::~Animal() { }
 
 // Getters
@@ -21,9 +28,6 @@ std::ostream& operator<<(std::ostream& ost, const Animal& animal) {
     return ost;
 }
   std::string Animal::save(std::stringstream& ost){
-  /*ost<<_name<<std::endl;
-  ost<<_gender<<std::endl;
-  ost<<_age<<std::endl;*/
 }
 
 // Convert Gender to a string and stream representation

@@ -3,6 +3,22 @@
 // Constructor / Destructor - note how delegation to base class works!
 Dog::Dog(Dog_breed breed, std::string name, Gender gender, int age)
     : Animal(name, gender, age), _breed{breed} { }
+Dog::Dog(std::istream& ist):Animal(ist){
+    std::string breed;
+    ist>>breed;
+        if(breed=="Mix"){_breed=Dog_breed::MIX ;}
+        else if(breed=="Labrador"){ _breed=Dog_breed::LABRADOR;}
+        else if(breed=="Retriever"){_breed=Dog_breed::RETRIEVER;} 
+        else if(breed=="Shepherd"){_breed=Dog_breed::SHEPHERD;} 
+        else if(breed=="Bulldog"){_breed=Dog_breed::BULLDOG;} 
+        else if(breed=="Beagle"){_breed=Dog_breed::BEAGLE;} 
+        else if(breed=="Poodle"){_breed=Dog_breed::POODLE;} 
+        else if(breed=="Rottweiler"){_breed=Dog_breed::ROTTWEILER;} 
+        else if(breed=="Pointer"){_breed=Dog_breed::POINTER;} 
+        else if(breed=="Terrier"){_breed=Dog_breed::TERRIER;} 
+        else if(breed=="Boxer"){_breed=Dog_breed::BOXER;} 
+        else if(breed=="Dachshund"){_breed=Dog_breed::DACHSHUND;} 
+}
 Dog::~Dog() { }
 
 // Overrides for pure virtual methods
@@ -33,9 +49,9 @@ std::ostream& operator<<(std::ostream& ost, const Dog_breed& breed) {
 }
  std::string Dog::save(std::stringstream& ost){
   ost<<"dog"<<std::endl;
-  ost<<_breed<<std::endl;
   ost<<_name<<std::endl;
   ost<<_gender<<std::endl;
   ost<<_age<<std::endl;
+  ost<<_breed<<std::endl;
  return ost.str();
 }

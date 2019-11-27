@@ -72,6 +72,7 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     filemenu->append(*menuitem_save);
 
     Gtk::MenuItem *menuitem_open = Gtk::manage(new Gtk::MenuItem("_Open", true));
+    menuitem_open->signal_activate().connect([this]{this->on_open_click();});
     filemenu->append(*menuitem_open);
 
     Gtk::MenuItem *menuitem_quit = Gtk::manage(new Gtk::MenuItem("_Quit", true));
@@ -430,6 +431,15 @@ void Mainwin::on_save_click() {
 }
   catch(std::exception e){
    Gtk::MessageDialog{*this,"Unable to save shelter"}.run();
+} 
+}
+void Mainwin::on_open_click(){
+ try{
+  std::ifstream ifs{"untitled.mass"};
+  shelter->open(ifs);
+}
+  catch(std::exception e){
+   Gtk::MessageDialog{*this,"Unable to load shelter"}.run();
 } 
 }
 // /////////////////

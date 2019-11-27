@@ -10,6 +10,7 @@ std::ostream& operator<<(std::ostream& ost, const Gender& gender);
 class Animal {
   public:
     Animal(std::string name, Gender gender, int age);
+    Animal(std::istream& ist);
     virtual ~Animal();
     virtual std::string save(std::stringstream& ost)=0;
     virtual std::string family() const = 0;
