@@ -9,7 +9,9 @@ class Client {
   public:
     Client(std::string name, std::string phone, std::string email);
     friend std::ostream& operator<<(std::ostream& ost, const Client& client);
-
+    std::string name();
+    std::string phone();
+    std::string email();
     void adopt(Animal& animal);
     int num_adopted();
     const Animal& animal(int index);

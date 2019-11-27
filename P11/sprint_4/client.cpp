@@ -13,4 +13,7 @@ std::ostream& operator<<(std::ostream& ost, const Client& client) {
 void Client::adopt(Animal& animal) {_adopted.push_back(&animal);}
 int Client::num_adopted() {return _adopted.size();}
 const Animal& Client::animal(int index) {return *(_adopted[index]);}
+  std::string Client::name(){return _name;}
+  std::string Client::phone(){return _phone;}
+  std::string Client::email(){return _email;}
 

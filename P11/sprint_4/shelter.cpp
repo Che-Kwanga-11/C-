@@ -4,6 +4,7 @@
 #include "dog.h"
 #include "rabbit.h"
 #include "cat.h"
+#include "client.h"
 
 Shelter::Shelter(std::string name) : _name{name} { }
 std::string Shelter::name() {return _name;}
@@ -34,7 +35,9 @@ void Shelter::save(std::ostream& ost){
 }
  ost<<_clients.size()<<std::endl;
  for(int i=0;i<Shelter::num_clients();++i){
-   ost<<_clients[i]<<std::endl;
+   ost<<_clients[i].name()<<std::endl;
+   ost<<_clients[i].phone()<<std::endl;
+   ost<<_clients[i].email()<<std::endl;
 }
 ost<<_name<<std::endl;
 }
@@ -57,10 +60,15 @@ void Shelter::open(std::istream& ist){
 }
  
  ist>>clients_number;
+ std::string blank;
+ getline(ist,blank);
  for(int i=0;i<clients_number;++i){
-    std::string client;
-    ist>>client;
-  // _clients.push_back(client);
+    std::string name,phone,email;
+    getline(ist,name);
+    getline(ist,phone);
+    getline(ist,email);
+    Client client{name,phone,email};
+    _clients.push_back(client);
 }
 ist>>_name;
 }
