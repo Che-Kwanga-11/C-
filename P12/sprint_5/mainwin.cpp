@@ -153,8 +153,46 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     // T O O L B A R
     // Add a toolbar to the vertical box below the menu
     Gtk::Toolbar *toolbar = Gtk::manage(new Gtk::Toolbar);
-    toolbar->override_background_color(Gdk::RGBA{"gray"});
+    toolbar->override_background_color(Gdk::RGBA{"white"});
+    //2new,4save,3open,1quit,5new,6list,7 new, 8list
+    Gtk::Image* image=Gtk::manage(new Gtk::Image("exit.png")); //<div>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+    Gtk::Image* image_shelter=Gtk::manage(new Gtk::Image("newShelter.png"));
+    Gtk::Image* image_open=Gtk::manage(new Gtk::Image("open.png"));
+    Gtk::Image* image_save=Gtk::manage(new Gtk::Image("save.png"));
+    Gtk::Image* image_new_animal=Gtk::manage(new Gtk::Image("new_animal.png"));
+    Gtk::Image* image_list_animal=Gtk::manage(new Gtk::Image("list_animal.png"));
+    Gtk::Image* image_new_client=Gtk::manage(new Gtk::Image("new_client.png"));
+    Gtk::Image* image_adopt_animal=Gtk::manage(new Gtk::Image("adopt_animal.png"));
+
+    Gtk::ToolButton* quit=Gtk::manage(new Gtk::ToolButton(*image));
+    Gtk::ToolButton* new_shelter=Gtk::manage(new Gtk::ToolButton(*image_shelter));
+    Gtk::ToolButton* open=Gtk::manage(new Gtk::ToolButton(*image_open));
+    Gtk::ToolButton* save=Gtk::manage(new Gtk::ToolButton(*image_save));
+    Gtk::ToolButton* new_animal=Gtk::manage(new Gtk::ToolButton(*image_new_animal));
+    Gtk::ToolButton* list_animal=Gtk::manage(new Gtk::ToolButton(*image_list_animal));
+    Gtk::ToolButton* new_client=Gtk::manage(new Gtk::ToolButton(*image_new_client));
+    Gtk::ToolButton* adopt_animal=Gtk::manage(new Gtk::ToolButton(*image_adopt_animal));
+
+    new_shelter->signal_clicked().connect([this]{this->on_new_shelter_click();});
+    quit->signal_clicked().connect([this] {this->on_quit_click();});
+    open->signal_clicked().connect([this] {this->on_open_click();});
+    save->signal_clicked().connect([this] {this->on_save_click();});
+    new_animal->signal_clicked().connect([this] {this->on_new_animal_click();}); 
+    list_animal->signal_clicked().connect([this] {this->on_list_animals_click();});
+    new_client->signal_clicked().connect([this] {this->on_new_client_click();});
+    adopt_animal->signal_clicked().connect([this] {this->on_adopt_animal_click();});           
+    
+    toolbar->add(*quit);
+    toolbar->add(*new_shelter);
+    toolbar->add(*open);
+    toolbar->add(*save);
+    toolbar->add(*new_animal);
+    toolbar->add(*list_animal);
+    toolbar->add(*new_client);
+    toolbar->add(*adopt_animal);
+
     vbox->pack_start(*toolbar, Gtk::PACK_SHRINK, 0);
+    
 
     // ///////////////////////
     // D A T A   D I S P L A Y
@@ -440,6 +478,8 @@ void Mainwin::on_list_adopted_click() {
 
 }
 void Mainwin::on_save_click() {
+  int filename_length=shelter->get_filename().size();
+  if(filename_length>0){
   try{
   std::ofstream ofs{shelter->get_filename()};
   shelter->save(ofs);
@@ -447,6 +487,7 @@ void Mainwin::on_save_click() {
   catch(std::exception e){
    Gtk::MessageDialog{*this,"Unable to save shelter"}.run();
 } 
+}else{on_save_as_click();}
 }
 void Mainwin::on_save_as_click() {
 Gtk::FileChooserDialog dialog("Please choose a file",
@@ -541,8 +582,8 @@ Gtk::FileChooserDialog dialog("Please choose a file",
  about_dialog.set_version("1.0.0");
  about_dialog.set_copyright("Che Kwanga");
  about_dialog.set_transient_for(*this);
- about_dialog.set_comments("This is an example application");
- about_dialog.set_program_name("MASS Dialog");
+ about_dialog.set_comments("This is an animal adoption application");
+ about_dialog.set_program_name("MASS");
  about_dialog.run();
 }
 
