@@ -5,6 +5,7 @@
 #include "client.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
 
@@ -143,6 +144,11 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
   // Display help and about info.
     Gtk::MenuItem *menuitem_help = Gtk::manage(new Gtk::MenuItem("_Help", true));
     menubar->append(*menuitem_help);
+    Gtk::Menu *help_menu=Gtk::manage(new Gtk::Menu());
+    menuitem_help->set_submenu(*help_menu);
+    Gtk::MenuItem *about_item=Gtk::manage(new Gtk::MenuItem("_About",true));
+    about_item->signal_activate().connect([this] {this->on_about_click();});
+    help_menu->append(*about_item);
     // /////////////
     // T O O L B A R
     // Add a toolbar to the vertical box below the menu
@@ -527,7 +533,20 @@ Gtk::FileChooserDialog dialog("Please choose a file",
     delete shelter;
     shelter=new Shelter(name);
    
+} 
+ void Mainwin::on_about_click(){
+ Gtk::AboutDialog about_dialog=Gtk::AboutDialog();
+ //about_dialog.set_logo("");
+//about_dialog->set_license();
+ about_dialog.set_version("1.0.0");
+ about_dialog.set_copyright("Che Kwanga");
+ about_dialog.set_transient_for(*this);
+ about_dialog.set_comments("This is an example application");
+ about_dialog.set_program_name("MASS Dialog");
+ about_dialog.run();
 }
+
+
 // /////////////////
 // U T I L I T I E S
 // /////////////////

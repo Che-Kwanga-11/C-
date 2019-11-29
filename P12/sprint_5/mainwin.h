@@ -25,6 +25,7 @@ class Mainwin : public Gtk::Window {
         void on_save_as_click();              // save a file
         void on_open_click();              //open a file
         void on_new_shelter_click();       // open new shelter
+        void on_about_click();             //open about dialog
         void status(std::string s);        // Set the status message
     private:
         Shelter *shelter;                  // Current animal shelter
