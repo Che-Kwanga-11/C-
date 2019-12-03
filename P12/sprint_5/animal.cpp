@@ -1,4 +1,6 @@
 #include "animal.h"
+#include <iomanip>
+#include <sstream>
 
 // Constructors / Destructors
 Animal::Animal(std::string name, Gender gender, int age)
@@ -20,8 +22,13 @@ int Animal::age() const {return _age;}
 
 // Convert Animal and its derived classes to a string and stream representation
 std::string Animal::to_string() const {
-    return _name + " (" + ::to_string(this->gender()) + ' ' + this->breed() + ' ' + this->family()
-                 + ", age " + std::to_string(this->age()) + ')';
+    std::ostringstream oss;
+    oss<<std::setw(30)<<std::left<<_name<<" "
+       <<std::setw(20)<<std::left<<::to_string(this->gender())<<" "
+       <<std::setw(20)<<std::right<<this->breed()<<" "
+       <<std::setw(20)<<std::right<<this->family()<<" "
+       <<std::setw(20)<<std::right<<std::to_string(this->age());
+    return oss.str();
 }
 std::ostream& operator<<(std::ostream& ost, const Animal& animal) {
     ost << animal.to_string();

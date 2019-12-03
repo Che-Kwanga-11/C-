@@ -3,6 +3,7 @@
 #include "cat.h"
 #include "rabbit.h"
 #include "client.h"
+#include "animal.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -109,6 +110,12 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     Gtk::MenuItem *menuitem_show_adoptions = Gtk::manage(new Gtk::MenuItem("_Show Adoptions", true));
     menuitem_show_adoptions->signal_activate().connect([this] {this->on_list_adopted_click();});
     animalmenu->append(*menuitem_show_adoptions);
+    
+    //           V I E W  A N I M A L
+    // Show animal information in a dialog including image. 
+    Gtk::MenuItem *menuitem_view = Gtk::manage(new Gtk::MenuItem("_View", true));
+    menuitem_show_adoptions->signal_activate().connect([this] {this->on_view_click();});
+    animalmenu->append(*menuitem_view);
 
     //     C L I E N T
     // Create a Client menu and add to the menu bar
@@ -192,7 +199,8 @@ Mainwin::Mainwin() : shelter{new Shelter{"Mavs Animal Shelter"}} {
     toolbar->add(*adopt_animal);
 
     vbox->pack_start(*toolbar, Gtk::PACK_SHRINK, 0);
-    
+    heading=Gtk::manage(new Gtk::Label());
+    vbox->pack_start(*heading,Gtk::PACK_SHRINK,0);
 
     // ///////////////////////
     // D A T A   D I S P L A Y
@@ -321,10 +329,13 @@ void Mainwin::on_new_animal_click() {
 }
 
 void Mainwin::on_list_animals_click() {
+    std::string str="<span foreground='blue' size='xx-large'>NAME        GENDER         BREED        FAMILY       AGE        </span>";
+    heading->set_markup(str);
     std::ostringstream oss;
     for(int i=0; i<shelter->num_animals(); ++i)
         oss << shelter->animal(i) << '\n'; 
-    data->set_text(oss.str());
+    std::string list=oss.str();
+    data->set_markup("<span foreground='black' size='large'>"+list+"</span>");
     status("List of All Animals");
 }
 void Mainwin::on_new_client_click() {
@@ -372,10 +383,13 @@ void Mainwin::on_new_client_click() {
 }
 
 void Mainwin::on_list_clients_click() {
+    std::string str="<span foreground='blue' size='xx-large'>NAME                 PHONE                EMAIL            </span>";
+    heading->set_markup(str);
     std::ostringstream oss;
     for(int i=0; i<shelter->num_clients(); ++i)
         oss << shelter->client(i) << '\n'; 
-    data->set_text(oss.str());
+     std::string list=oss.str();
+    data->set_markup("<span foreground='black' size='large'>"+list+"</span>");
     status("List of All Clients");
 }
 
@@ -577,17 +591,102 @@ Gtk::FileChooserDialog dialog("Please choose a file",
 } 
  void Mainwin::on_about_click(){
  Gtk::AboutDialog about_dialog=Gtk::AboutDialog();
- //about_dialog.set_logo("");
-//about_dialog->set_license();
- about_dialog.set_version("1.0.0");
- about_dialog.set_copyright("Che Kwanga");
+ auto logo = Gdk::Pixbuf::create_from_file("simple_house_thin.png");
+ about_dialog.set_logo(logo);
+ about_dialog.set_version("Version 1.1.0");
+ about_dialog.set_copyright("Copyright 2019");
  about_dialog.set_transient_for(*this);
+ std::vector< Glib::ustring > authors = {"Che J Kwanga"};
+ about_dialog.set_authors(authors);
  about_dialog.set_comments("This is an animal adoption application");
  about_dialog.set_program_name("MASS");
+ std::vector< Glib::ustring > artists = {"Logo by FreeIcon,<div>Icons made by <a href='https:www.flaticon.com/authors/freepik' title='Freepik'>Freepik</a> from <a href='https://www.flaticon.com/' title='Flaticon'>www.flaticon.com</a></div>"};
+ about_dialog.set_artists(artists);
  about_dialog.run();
 }
 
+ void Mainwin::on_view_click(){
+   if(shelter->num_animals() == 0) {
+        Gtk::MessageDialog{*this, "No clients currently registered!"}.run();
+        return;
+    }
+      Gtk::Dialog dialog{"View an Animal", *this};
 
+    Gtk::Grid grid;
+    Gtk::ComboBoxText c_animal;
+    for(int i=0; i<shelter->num_animals(); ++i) {
+        std::ostringstream oss;
+        oss << shelter->animal(i);
+        c_animal.append(oss.str());
+    }
+    c_animal.set_active(0);
+    Gtk::Label l_animal{"Animal"};
+    grid.attach(l_animal, 0, 0, 1, 1);
+    grid.attach(c_animal, 1, 0, 2, 1);
+
+    dialog.get_content_area()->add(grid);
+
+    dialog.add_button("View", 1);
+    dialog.add_button("Cancel", 0);
+
+    dialog.show_all();
+    int choice;
+    if (dialog.run()) {
+        choice=c_animal.get_active_row_number();
+}
+ /* Animal* animal=new (shelter->animal(choice));
+  std::string breed=animal->breed();
+  Gtk::Image* image_animal;//=Gtk::manage(new Gtk::Image("newShelter.png"));
+  if(animal->family()=="dog"){
+   if(breed=="Mix"){image_animal=Gtk::manage(new Gtk::Image("mix_dog.jpg"));}
+        else if(breed=="Labrador"){ image_animal=Gtk::manage(new Gtk::Image("labrador.jpg"));}
+        else if(breed=="Retriever"){image_animal=Gtk::manage(new Gtk::Image("retriever.jpg"));} 
+        else if(breed=="Shepherd"){image_animal=Gtk::manage(new Gtk::Image("shepherd.jpg"));}
+        else if(breed=="Bulldog"){image_animal=Gtk::manage(new Gtk::Image("bulldog.jpg"));}
+        else if(breed=="Beagle"){image_animal=Gtk::manage(new Gtk::Image("boxer.jpg"));} 
+        else if(breed=="Poodle"){image_animal=Gtk::manage(new Gtk::Image("poodle.jpg"));} 
+        else if(breed=="Rottweiler"){image_animal=Gtk::manage(new Gtk::Image("rottweiler.jpg"));} 
+        else if(breed=="Pointer"){image_animal=Gtk::manage(new Gtk::Image("boxer.jpg"));}
+        else if(breed=="Terrier"){image_animal=Gtk::manage(new Gtk::Image("terrier.jpg"));} 
+        else if(breed=="Boxer"){image_animal=Gtk::manage(new Gtk::Image("boxer.jpg"));}
+        else if(breed=="Dachshund"){image_animal=Gtk::manage(new Gtk::Image("dachshund.jpg"));}
+}else if(animal->family()=="cat"){
+     if(breed=="Mix"){image_animal=Gtk::manage(new Gtk::Image("mix_cat.jpg"));}
+        else if(breed=="Siamese"){image_animal=Gtk::manage(new Gtk::Image("siamese.jpg"));}
+        else if(breed=="Persian"){image_animal=Gtk::manage(new Gtk::Image("persian.jpg"));}
+        else if(breed=="Maine Coon"){image_animal=Gtk::manage(new Gtk::Image("maine_coon.jpg"));}
+        else if(breed=="Ragdoll"){image_animal=Gtk::manage(new Gtk::Image("ragdoll.jpg"));}
+        else if(breed=="Bengal"){image_animal=Gtk::manage(new Gtk::Image("bengal.jpg"));}
+        else if(breed=="Abyssinian"){image_animal=Gtk::manage(new Gtk::Image("abyssinian.jpg"));}
+        else if(breed=="Birman"){image_animal=Gtk::manage(new Gtk::Image("birman.jpg"));}
+        else if(breed=="Oriental Shorthair"){image_animal=Gtk::manage(new Gtk::Image("oriental_shorthair.jpg"));} 
+        else if(breed=="Devon Rex"){image_animal=Gtk::manage(new Gtk::Image("devon_rex.jpg"));}
+        else if(breed=="American Shorthair"){image_animal=Gtk::manage(new Gtk::Image("american_shorthair.jpg"));}
+        else if(breed=="Himalayan"){image_animal=Gtk::manage(new Gtk::Image("himalayan.jpg"));}
+}
+else{
+  if(breed=="California White"){image_animal=Gtk::manage(new Gtk::Image("california_white.jpg"));}
+        else if(breed=="Vienna White"){image_animal=Gtk::manage(new Gtk::Image("vienna_white.jpg"));}
+        else if(breed=="Chinchilla"){image_animal=Gtk::manage(new Gtk::Image("chinchilla.jpg"));}
+        else if(breed=="Giant Chinchilla"){image_animal=Gtk::manage(new Gtk::Image("giant_chinchilla.jpg"));}
+        else if(breed=="Flemish Chinchilla"){image_animal=Gtk::manage(new Gtk::Image("flemish_chinchilla.jpg"));} 
+        else if(breed=="Rex"){image_animal=Gtk::manage(new Gtk::Image("rex.jpg"));}
+        else if(breed=="Lionhead"){image_animal=Gtk::manage(new Gtk::Image("lionhead.jpg"));}
+        else if(breed=="Silver Fox"){image_animal=Gtk::manage(new Gtk::Image("silver_fox.jpg"));} 
+        else if(breed=="New Zealand"){image_animal=Gtk::manage(new Gtk::Image("new_zealand.jpg"));}
+        else if(breed=="Lop"){image_animal=Gtk::manage(new Gtk::Image("lop.jpg"));}
+        else if(breed=="Polish"){image_animal=Gtk::manage(new Gtk::Image("polish.jpg"));}
+        else if(breed=="Harlequin"){image_animal=Gtk::manage(new Gtk::Image("harlequin.jpg"));}
+}
+    Gtk::Dialog* dialog_2{"Animal Display",*this};
+    Gtk::Box *vbox = Gtk::manage(new Gtk::VBox);
+    std::ostringstream oss;
+    oss << shelter->animal(choice);
+    Gtk::Label* label=Gtk::manage(new Gtk::Label(oss.str()));
+    vbox->pack_start(*label);
+    dialog_2->add(*vbox);*/
+
+}
 // /////////////////
 // U T I L I T I E S
 // /////////////////

@@ -27,7 +27,9 @@ class Mainwin : public Gtk::Window {
         void on_new_shelter_click();       // open new shelter
         void on_about_click();             //open about dialog
         void status(std::string s);        // Set the status message
+        void on_view_click();
     private:
+        Gtk::Label *heading;
         Shelter *shelter;                  // Current animal shelter
         Gtk::Label *data;                 // Display for data area
         Gtk::Label *msg;                   // Status message display
